@@ -1,0 +1,66 @@
+{% extends 'content.html' %}
+
+{% block content %}
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="bg-blue">
+            <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <h2>Create Alert</h2>
+
+                <div class="pure-form-aligned">
+
+                    <form class="pure-form">
+                        <div class="pure-control-group">
+                            <label for="title"></label>
+                            <input placeholder="Alert Title" type="text" name="title">
+                            </div>
+                        <div class="pure-control-group">
+                            <label for=""></label>
+                        <textarea style="min-height: 10.5em" maxlength="512" placeholder="Write alert description here..."
+                                  class="pure-input-1-2" name="description"></textarea>
+                            </div>
+                        <div class="pure-control-group">
+                            <label for="alert_type">Alert Type</label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="" value="traffic">
+                                Traffic Alerts
+                            </label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="" value="terrorism">
+                                Terrorism Alerts
+                            </label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="" value="weather">
+                                Weather Alerts
+                            </label>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="privacy">Share with</label>
+                            <select class="pure-input-1-2" name="privacy" multiple>
+                                <option value="all">All</option>
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="pure-control-group">
+                        <label for=""></label>
+                        <button id="create_group" class="pure-button button-success">
+                            Create Alert
+                        </button>
+
+                        <a href="{% url 'Alerts:alert_view' %}" id="cancel_member" class="pure-button button-error">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_block %}
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="bg-blue">
+        <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <row>
+                <column cols="10">
+                    <h2>My Alerts</h2>
+                </column>
+                <column cols="2">
+                    <div class="float-right">
+                        <button onclick="window.location='{% url 'Alerts:alert_create_view' %}'"
+                                class="pure-button button-secondary button-large">Create Alert
+                        </button>
+                    </div>
+                </column>
+
+            </row>
+
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block js_block %}
+
+{% endblock %}

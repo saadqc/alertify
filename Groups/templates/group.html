@@ -1,0 +1,145 @@
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+
+<div class="center padding40" style="margin-top: 4%">
+    <div class="bg-blue">
+        <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <row>
+                <column cols="10">
+                    <h1>{{ group.name }}</h1>
+
+            {% if is_paginated %}
+                <div id="semantic-grid" class="padding20">
+                    <row>
+                        {% for user_ in group.users.all %}
+                            <column cols="4">
+                            <div>
+                                <img class="profile-img-medium" src="{{ user_.profile_img_path }}">
+                                    <div style="display: inline-block;">
+                                <a href="{% url 'Profiles:profile_view' id=user_.id %}" class="font-set-heading2">
+                                    {{ user_.get_full_name }}
+                                </a>{% if group.owner.id == user.id %}
+                                        <br>
+                                        <form method="post" action="{% url 'Groups:group_user_remove_view' %}">
+                                            {% csrf_token %}<button
+                                                    style="height: 25px;" class="remove_member pure-button button-error button-xsmall">Remove</button>
+                                                    {% endif %}
+                                                <input type="hidden" name="group_id" value="{{ group.id }}">
+                                                <input type="hidden" name="member_ids" value="{{ user_.id }}">
+                                        </form>
+                                    </div>
+                            </div>
+
+                            </column>
+                            {% if forloop.counter|divisibleby:3 %}
+                                </row>
+                                <row>
+                            {% endif %}
+                        {% endfor %}
+                        </row>
+                </div>
+
+                <ul class="pagination centered">
+                    {% if list_users.paginator.has_previous %}
+                        <li>
+                            <span><a href="?page={{ list_users.paginator.previous_page_number }}">Previous</a></span>
+                        </li>
+                    {% endif %}
+                    <li class="">
+                        <span>Page {{ list_users.number }} of {{ list_users.paginator.num_pages }}.</span>
+                    </li>
+                    {% if list_users.paginator.has_next %}
+                        <li>
+                            <span><a href="?page={{ list_users.paginator.next_page_number }}">Next</a></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <p class="padding20">You haven't added any user yet.</p>
+            {% endif %}
+                </column>
+                <column cols="2">
+                    <div class="float-right">
+
+                        <form class="pure-form" method="post" id="form_member_add" action="{% url 'Groups:group_user_add_view' %}">
+                            <fieldset>
+                                {% if group.owner.id == user.id %}
+
+                                    <div class="pure-control-group">
+                                        <button onclick="window.location='{% url 'Groups:group_delete_view' id=group.id %}'"
+                                                class="pure-button button-error button-large">Delete Group
+                                        </button>
+                                        {% csrf_token %}
+                                        <div class="padding30"></div>
+                                        <input type="hidden" name="group_id" value="{{ group.id }}">
+                                        <input type="hidden" name="member_add">
+                                            <input id="member" name="member" type="text" placeholder="Add member..." class="pure-input-rounded">
+                                    </div>
+                                {% endif %}
+                            </fieldset>
+                        </form>
+                    </div>
+                </column>
+            </row>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_block %}
+
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+
+                $("input[name='member']").autocomplete({
+
+                    source: function (request, response) {
+                        var id_list = '';
+                        $("input[name='member_ids']").each(function () {
+                            id_list += ($(this).val()) + ',';
+                        });
+                        $.ajax({
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                            },
+                            url: "{% url 'Profiles:profile_get_view' %}",
+                            method: "POST",
+                            dataType: "json",
+                            data: {
+                                ids: id_list,
+                                q: request.term
+                            },
+                            success: function (data) {
+                                response(data['results']);
+                                console.log(data['results']);
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            },
+                            fail: function (data) {
+                                response(data['results']);
+                            }
+                        });
+                    },
+                    minLength: 3,
+                    focus: function (event, ui) {
+                        $(this).val(ui.item.label);
+                        return false;
+                    },
+                    select: function (event, ui) {
+
+                        $('input[name="member_add"]').val(ui.item.value);
+
+
+                        return false;
+                    }
+                });
+            $('.remove_member').click(function () {
+                $(this).parent().submit();
+            });
+        });
+    </script>
+
+{% endblock %}

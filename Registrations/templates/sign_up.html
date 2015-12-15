@@ -1,0 +1,60 @@
+{% load static %}
+{% load dajaxice_templatetags %}
+<html>
+	<head>
+        {% include 'styles.html' %}
+
+		<title>{{title}}</title>
+	</head>
+
+	<body ng-app="registrationApp">
+		<div class="body-wrapper"  ng-controller="RegisterCtrl">
+			<div class="content-wrapper" ng-view>
+				<div class="header">
+					<div class="logo-info open-sans-light">
+					</div>
+					<div class="sign-info">
+						<div class="sign-info-holder">
+							<ul>
+								<li>
+                                    <a href="{% url 'Registrations:login_view' %}"  class="open-sans-semibold" onclick="window.location={% url 'Registrations:login_view' %}">Sign In</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="content-holder">
+					<div class="content-box">
+						<div class="sign-info"><span class="open-sans-extrabold">{{ title }}</span> <span class="open-sans-light">GET FREQUENT ALERTS</span></div>
+						<div class="function-box">
+							<div class="heading open-sans-light">Register as a Member</div>
+							<div class="form">
+                                 <form action="" method="post" id="reg_form" >
+                                     {% csrf_token %}
+                                        {{ form.as_p }}
+                                     <p id="error" style="color:indianred;text-align: center;text-wrap: normal"></p>
+                                    <button type="button" ng-click="register()" class="orange-big open-sans-semibold"> REGISTER </button>
+                                 </form>
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+			<div class="footer open-sans-extrabold">
+				<div class="logo-tag">{{title}}</div>
+				<ul class="open-sans-semibold">
+					<li><a>How it works</a></li>
+					<li><a>Supported Domains</a></li>
+					<li><a>List of Sub Domains</a></li>
+					<li><a>Cookie Policy</a></li>
+					<li><a>How it works</a></li>
+					<li><a>Supported Domains</a></li>
+					<li><a>List of Sub Domains</a></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+    {% dajaxice_js_import %}
+    {% include 'scripts.html' %}
+    <script src="{% static 'js/controller.js' %}" type="text/javascript"></script>
+</html>
