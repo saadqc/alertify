@@ -17,6 +17,7 @@ class RegisterUserForm(forms.ModelForm):
                   'email',
                   'password1',
                   'password2',
+                  'city',
                   'gender')
         widgets = ({
                        'first_name': OtherTextField(attrs={'placeholder': u'FIRST NAME', 'name': 'first_name',
@@ -27,6 +28,8 @@ class RegisterUserForm(forms.ModelForm):
                                                           'ng_model': 'user_gender'}),
                        'gender_female': OtherCheckBoxField(attrs={'placeholder': u'', 'name': 'gender', 'value': 'Female',
                                                 'ng_model': 'user_gender'}),
+                       'city': OtherTextField(attrs={'placeholder': u'CITY', 'name': 'city', 'value': '',
+                                                       'ng_model': 'user_city'}),
                        'email': OtherEmailInput(attrs={'placeholder': u'EMAIL ADDRESS', 'name': 'email',
                                                        'ng_model': 'user_email'})
                    })
@@ -40,6 +43,7 @@ class RegisterUserForm(forms.ModelForm):
 
     def save(self, commit=True):
         m = super(RegisterUserForm, self).save(commit=False)
+        m.bearer_token = random_string(32)
         m.set_password(self.cleaned_data['password1'])
         if commit:
             m.save()
@@ -47,7 +51,7 @@ class RegisterUserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RegisterUserForm, self).__init__(*args, **kwargs)
-        for fieldname in ['first_name', 'last_name', 'email', 'password1', 'password2']:
+        for fieldname in ['first_name', 'last_name', 'email', 'city', 'password1', 'password2']:
             self.fields[fieldname].help_text = None
             self.fields[fieldname].label = ''
 

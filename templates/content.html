@@ -5,11 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ title }}</title>
-    {% load notifications_tags %}
-    <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-    {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
 
     <link href="{% static 'css/kube.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/rating.css' %}" rel="stylesheet"/>
     {% include 'styles_loggedIn.html' %}
 </head>
 <body>
@@ -27,28 +25,39 @@
              id="tuckedMenu">
             <div class="custom-menu-screen"></div>
             <ul class="pure-menu-list open-sans-semibold">
+            {% if request.user.moderator == 'public' %}
                 <li class="pure-menu-item"><a href="{% url 'Groups:group_view' %}" class="pure-menu-link">Groups</a>
                 </li>
-                <li class="pure-menu-item"><a href="{% url 'Alerts:alert_view' %}" class="pure-menu-link">Alerts</a>
+                <li class="pure-menu-item"><a href="{% url 'Alerts:alert_crime_view' %}" class="pure-menu-link">Crime Alerts</a>
                 </li>
+                <li class="pure-menu-item"><a href="{% url 'Alerts:alert_traffic_view' %}" class="pure-menu-link">Traffic
+                    Alerts</a>
+                </li>
+                <li class="pure-menu-item"><a href="{% url 'Alerts:alert_weather_view' %}" class="pure-menu-link">Weather
+                    Alerts</a>
+                </li>
+                {% else %}
+                <li class="pure-menu-item"><a href="{% url 'Alerts:alert_view' %}" class="pure-menu-link">Pending Alerts</a>
+                </li>
+            {% endif %}
+                {% if user.is_admin %}
                 <li class="pure-menu-item"><a href="#" class="pure-menu-link">Admin</a></li>
+                {% endif %}
             </ul>
-
         </div>
+        {% load notifications_tags %}
+        {% notifications_unread as unread_count %}
         <div class="pure-menu pure-menu-horizontal custom-menu custom-menu-bottom custom-menu-tucked float-right"
              id="tuckedMenu1" style="margin-right: 8rem;">
             <ul class="pure-menu-list open-sans-semibold float-right">
+                <li class="pure-menu-item pure-menu-allow-hover">
+                    <a href="#" id="menuLink1" class="pure-menu-link">
+                       <button class="btn-bs btn-primary-bs">Notifications {% if unread_count %}{% live_notify_badge classes="badge badge-color" %}{% else %}
+                           {% live_notify_badge classes="badge" %}{% endif %}</button>
+                    </a>
 
-                <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                    <a href="#" id="menuLink1" class="pure-menu-link">Notifications</a>
                     <ul class="pure-menu-children notification-container">
-                        <div style="padding: 8px;">
-                            <li class="notification-block"><a href="#" class="notification">An alert is generated please
-                                something mouse keys etc and everything check...</a></li>
-                            <li class="notification-block"><a href="#" class="notification">Twitter</a></li>
-                            <li class="notification-block"><a href="#" class="notification">Tumblr Blog</a></li>
-                        </div>
-                        <li class="notification-all-block"><a href="#" class="notification-all">See All</a></li>
+                        {% include 'notifications/list.html' %}
                     </ul>
                 </li>
 
@@ -69,21 +78,12 @@
             </ul>
         </div>
     </div>
-    <script>
-        (function (window, document) {
-            document.getElementById('toggle').addEventListener('click', function (e) {
-                document.getElementById('tuckedMenu').classList.toggle('custom-menu-tucked');
-                document.getElementById('toggle').classList.toggle('x');
-                document.getElementById('tuckedMenu1').classList.toggle('custom-menu-tucked');
-                document.getElementById('toggle1').classList.toggle('x');
-            });
-        })(this, this.document);
-    </script>
+
     <div class="body-wrapper cont">
         {% block content %}
 
         {% endblock %}
-
+    </div>
         <div class="footer open-sans-extrabold" id="footer">
             <div class="logo-tag">{{ title }}</div>
             <ul class="open-sans-semibold">
@@ -98,10 +98,21 @@
             </ul>
         </div>
 
-    </div>
-
 </div>
 <script src="{% static 'js/jquery1.11.1.js' %}" type="text/javascript"></script>
+<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+
+        (function (window, document) {
+            document.getElementById('toggle').addEventListener('click', function (e) {
+                document.getElementById('tuckedMenu').classList.toggle('custom-menu-tucked');
+                document.getElementById('toggle').classList.toggle('x');
+                document.getElementById('tuckedMenu1').classList.toggle('custom-menu-tucked');
+                document.getElementById('toggle1').classList.toggle('x');
+            });
+        })(this, this.document);
+
+</script>
 {% block js_block %}
 
 {% endblock %}

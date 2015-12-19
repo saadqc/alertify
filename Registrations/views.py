@@ -1,9 +1,12 @@
+from django.db.models.query_utils import Q
+from AlertManagement import settings
+from django import http
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
 from django.contrib.auth import login as django_login, authenticate, \
     logout as django_logout
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from AlertManagement.Common.utils import update_response
 
 # Create your views here.
@@ -126,3 +129,21 @@ class HomeView(View):
 
 class Success(TemplateView):
     template_name = "sign_in.html"
+
+
+"""
+API - Alert Management
+"""
+
+
+def api_login(request):
+    context = {}
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    key = request.POST.get('key')
+    if key != settings.API_KEY:
+        raise http.HttpResponseForbidden()
+
+    user = get_object_or_404(User, Q(email=email) & Q(password=password))
+    context.update({'token': user.bearer_token})
+    return context

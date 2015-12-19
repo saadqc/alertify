@@ -25,7 +25,6 @@ html, body {
 }
 
 #footer {
-    position: absolute;
     bottom: 0;
     width: 100%;
 }
@@ -350,15 +349,20 @@ html, body {
     background-color: #2d3e50 !important;
 }
 
+#map-canvas {
+    width: 100%;
+    height: 100%
+}
+
 .notification{
     font-size: 0.9em;
     text-decoration: none;
     white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
+    /*white-space: -pre-wrap; /!* Opera 4-6 *!/*/
     white-space: -o-pre-wrap; /* Opera 7 */
     white-space: pre-wrap; /* css-3 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
-    white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
+    /*white-space: -webkit-pre-wrap; /!* Newer versions of Chrome/Safari*!/*/
     word-break: break-all;
     white-space: normal;
     font-weight: 700;
@@ -377,6 +381,7 @@ html, body {
     padding: 12px;
     text-align: center;
     background: #e4e4e4;
+    width: 20em;
 }
 
 .notification-block{
@@ -390,4 +395,208 @@ html, body {
 .notification-container{
     background: #f8f8f8;
     border: #cbcbcb 1px solid;
+}
+
+.body-wrapper
+{
+    min-height: 80%;
+}
+
+.main{
+    height: 100%;
+}
+
+.content-area{
+    min-height: 70%;
+}
+
+.notify-icon{
+    height: 35px;
+    width: 35px;
+}
+
+.notify-date-text{
+    color: #888888;
+}
+.notify-bar{
+    text-decoration: none;
+    color: #222222;
+    font-size: 0.9em;
+}
+
+.email-item-unread {
+    border-left: 6px solid #1b98f8;
+}
+
+.email-item {
+    padding: 0.9em 1em;
+    border-bottom: 1px solid #ddd;
+    border-left: 6px solid transparent;
+}
+
+.email-name {
+    text-transform: uppercase;
+    color: #999;
+}
+
+.email-name, .email-subject {
+    margin: 0;
+}
+
+.desc {
+    text-transform: none;
+    margin-top: 4px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: normal;
+}
+
+.email-name, .email-subject {
+    margin: 0;
+}
+
+.notify-td{
+    width: 23.5em;;
+}
+
+.notify-text{
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.btn-primary-bs {
+    color: #fff;
+    background-color: #364759;
+    border-color: #2e6da4;
+}
+
+.btn-bs {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.badge-color{
+    background: #b94a48;
+}
+
+.notifications{
+    padding:0 !important;
+    margin: 0 !important;
+}
+
+/****** Style Star Rating Widget *****/
+
+.rating {
+    border: none;
+    float: left;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label:before {
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+}
+
+.rating > .half:before {
+    content: "\f089";
+    position: absolute;
+}
+
+.rating > label {
+    color: #ddd;
+    float: right;
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label {
+    color: #FFD700;
+}
+
+/* hover previous stars in list */
+
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label {
+    color: #FFED85;
+}
+
+.pending-state{
+    color: #2d3e50;
+}
+
+.rejected-state{
+    color: #b94a48;
+}
+
+.accepted-state{
+    color: #0a8754;
 }

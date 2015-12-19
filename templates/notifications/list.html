@@ -1,0 +1,11 @@
+<ul class="notifications">
+  {% for notice in notifications %}
+    {% include 'notifications/notice.html' %}
+  {% endfor %}
+    {% if notifications|length == 0 %}
+        <a>
+        <div class="padding10" style="text-align: center;cursor:default;">No New Notifications</div>
+        </a>
+    {% endif %}
+    <li class="notification-all-block"><a href="{% url 'Profiles:notify_view' %}" class="notification-all">See All</a></li>
+</ul>

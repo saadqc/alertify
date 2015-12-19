@@ -1,5 +1,6 @@
 import json
 from AlertManagement import settings
+from django.http.response import Http404
 
 __author__ = 'Hp'
 
@@ -22,4 +23,11 @@ def update_response_logged_in(request, response):
         """
     response['title'] = settings.APP_NAME
     response['user'] = request.user
+    response['notifications'] = request.user.notifications.unread()
+    response['request'] = request
     return response
+
+
+def check_moderator(request):
+    if request.user.moderator != 'public':
+        raise Http404

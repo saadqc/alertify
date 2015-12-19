@@ -43,12 +43,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=10, choices=(('Male', 'Male'), ('Female', 'Female')), default='Male')
     updated_at = models.DateTimeField(_('last_updated'), auto_now_add=True)
     # User Authentication Fields
-    is_moderator = models.BooleanField(default=False)
+    # traffic, crime, weather
+    moderator = models.CharField(default='public', max_length=20)
+    bearer_token = models.CharField(default='', max_length=100)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    city = models.CharField(default='', max_length=60)
     profile_img_path = models.CharField(max_length=512, default='/static/img/default_profile_image.jpg', blank=True)
     objects = MyUserManager()
     USERNAME_FIELD = 'email'
+
+    def get_token(self):
+        return self.bearer_token
 
     def set_password(self, raw_password):
         self.password = raw_password

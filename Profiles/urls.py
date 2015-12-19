@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^image$', login_required(ImageChangeView.as_view(), login_url='/login/'), name='profile_image_view'),
     url(r'^update$', login_required(ChangePasswordView.as_view(), login_url='/login/'), name='profile_update_view'),
     url(r'^get', login_required(ProfileGetView.as_view(), login_url='/login/'), name='profile_get_view'),
+    url(r'^notification', login_required(NotificationView.as_view(), login_url='/login/'), name='notify_view'),
 ]

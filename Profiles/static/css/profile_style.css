@@ -61,6 +61,13 @@
     margin: 0 !important;
 }
 
+.profile-img-small-notify {
+    width: 45px;
+    height: 45px;
+    padding: 4px !important;
+    margin: 0 !important;
+}
+
 .profile-img-medium {
     width: 60px;
     height: 60px;

@@ -14,6 +14,8 @@ from django.core.paginator import PageNotAnInteger
 __author__ = 'Hp'
 
 from AlertManagement.Common import faker
+
+
 class GroupView(ListView):
     model = Group
     template_name = 'groups.html'

@@ -291,32 +291,34 @@ blocks[cols="6"] > div {
 
 /* =Tables
 -----------------------------------------------------------------------------*/
-table {
-    max-width: 100%;
-    width: 100%;
-    empty-cells: show;
-}
+/*table {*/
+    /*max-width: 100%;*/
+    /*width: 100%;*/
+    /*empty-cells: show;*/
+/*}*/
 
-table caption {
-    text-transform: uppercase;
-    padding: 0;
-    color: #000;
-    font-size: 11px;
-    font-weight: bold;
-}
+/*table caption {*/
+    /*text-transform: uppercase;*/
+    /*padding: 0;*/
+    /*color: #000;*/
+    /*font-size: 11px;*/
+    /*font-weight: bold;*/
+/*}*/
 
-table th,
-table td {
-    font-size: 94%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-    padding: 16px;
-    padding-bottom: 15px;
-}
+/*table th,*/
 
-table th:first-child,
-table td:first-child {
-    padding-left: 0;
-}
+
+/*table td {*/
+    /*font-size: 94%;*/
+    /*border-bottom: 1px solid rgba(0, 0, 0, 0.04);*/
+    /*padding: 16px;*/
+    /*padding-bottom: 15px;*/
+/*}*/
+
+/*table th:first-child,*/
+/*table td:first-child {*/
+    /*padding-left: 0;*/
+/*}*/
 
 table th:last-child,
 table td:last-child {
@@ -1485,15 +1487,15 @@ h6 .badge {
 -----------------------------------------------------------------------------*/
 .alert {
     position: relative;
-    padding: 12px 24px;
-    padding-right: 32px;
-    line-height: 24px;
-    font-size: 94%;
+    /*font-size: 94%;*/
     color: #000000;
     display: block;
     font-weight: normal;
     border-radius: 2px;
-    margin-bottom: 24px;
+    background: #e9ebec;
+    padding: 8px;
+    font-weight: 300 !important;
+    max-width: 24.5em;
 }
 
 .alert.alert-primary {

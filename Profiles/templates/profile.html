@@ -13,7 +13,6 @@
                     {% if profile_user.id == user.id %}
                     <p class="center">
                         <button id="btn_upload" class="pure-button button-secondary">Update Image</button>
-
                     </p>
                     <form method="post" id="image_form" enctype="multipart/form-data"
                           action="{% url 'Profiles:profile_image_view' %}" class="hidden">
@@ -27,9 +26,33 @@
                         <h1>{{ profile_user.get_full_name }}</h1>
                     </p>
                     <p class="font-set">
-                    Gender: &nbsp;
-                    {{ user.gender }}
+                    Gender:
+                    {{ profile_user.gender }}
                     </p>
+
+                    <p class="font-set">
+                        City:
+                        {{ profile_user.city }}
+                    </p>
+                    {% if profile_user.moderator == 'public' %}
+                    <p>
+
+                        {% for c in "12345" %}
+                            {% if int_rating >= forloop.counter %}
+                                <a name="example" class="star fullStar"
+                                   title="{{ forloop.counter }}"></a>
+                            {% else %}
+                                <a name="example" class="star"
+                                   title="{{ forloop.counter }}"></a>
+                            {% endif %}
+                        {% endfor %}
+                    </p><br>
+                <p>
+                    Alerts Rating: {{ rating }}
+                </p><br>
+                        {% else %}
+                        <p>Moderator: {{ request.user.moderator|capfirst }}</p><br>
+                {% endif %}
                     {% if profile_user.id == user.id %}
                     <p class="font-set">
                         <a href="{% url 'Profiles:profile_update_view' %}" class="pure-button button-small">Change Password</a>
@@ -39,12 +62,18 @@
                 </div>
             </div>
             </div>
-            {% if profile_user.id == user.id %}
+            {% if profile_user.id == user.id and user.moderator == 'public' %}
             <div class="bg-wheat padding10">
                 <div class="pure-g" style="margin-left: 20px;margin-right: 20px;">
-                <a href="#" class="pure-u-1-6 padding10 profile-sub-menu">
-                    My Alerts
+                <a href="{% url 'Alerts:alert_crime_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                    My Crime Alerts
                 </a>
+                        <a href="{% url 'Alerts:alert_weather_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                            My Weather Alerts
+                        </a>
+                        <a href="{% url 'Alerts:alert_traffic_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                            My Traffic Alerts
+                        </a>
                     <a href="{% url 'Groups:group_view' %}" class="pure-u-1-6 padding10 profile-sub-menu">
                         My Groups
                     </a>

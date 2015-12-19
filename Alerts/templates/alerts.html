@@ -1,5 +1,6 @@
 {% extends 'content.html' %}
 {% load static %}
+{% load library_tags %}
 {% block content %}
 
     <div class="center padding40" style="margin-top: 4%">
@@ -7,18 +8,140 @@
         <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
             <row>
                 <column cols="10">
-                    <h2>My Alerts</h2>
+                    {% if user.moderator == 'public' %}
+                    <h2>{% if request.GET.state == 'mine' %}My {% endif %}{{ type }} Alerts</h2>
+                        {% else %}
+                        <h2>Pending {{ type }} Alerts</h2>
+                    {% endif %}
                 </column>
+                {% if user.moderator == 'public' %}
                 <column cols="2">
                     <div class="float-right">
                         <button onclick="window.location='{% url 'Alerts:alert_create_view' %}'"
-                                class="pure-button button-secondary button-large">Create Alert
+                                class="pure-button button-success button-large">Create Alert
                         </button>
                     </div>
                 </column>
+            {% endif %}
 
             </row>
+        <row>
+            <column cols="12">
+                {% if is_paginated %}
+                    {% for alert in list_alerts %}
+                        <div id="list" class="pure-u-1">
+                            <div class="email-item email-item-selected pure-g">
+                                <div class="pure-u">
+                                    {% if type == 'Weather' %}
+                                    <img class="email-avatar" height="64" width="64"
+                                         src="{% static 'img/alert_weather.jpg' %}">
+                                    {% elif type == 'Traffic' %}
+                                        <img class="email-avatar" height="64" width="64"
+                                             src="{% static 'img/alert_traffic.png' %}">
+                                    {% else %}
+                                        <img class="email-avatar" height="64" width="64"
+                                             src="{% static 'img/alert_crime.jpg' %}">
+                                    {% endif %}
+                                </div>
 
+                                <div class="pure-u" style="width:88%;margin-left: 5px; cursor: default;">
+                                    <h4 class="email-subject">{{ alert.title }}
+                                    {% if request.user.moderator == 'public' %}
+                                        {% if alert.alert_state == 'pending' %}
+                                            <span class="pending-state">(Pending)</span>
+                                        {% elif alert_alert_state == 'accept' %}
+                                            <span class="accepted-state">(Accepted)</span>
+                                        {% elif alert_alert_state == 'reject' %}
+                                            <span class="rejected-state">(Rejected!)</span>
+                                        {% endif %}
+                                        {% endif %}
+                                        <a class="float-right pure-button button-secondary button-small">View Map</a>
+                                    </h4>
+                                {% if alert.owner.email != 'internet@user.com' %}
+                                    <h5 class="email-name">
+                                        Posted by <a href="{% url 'Profiles:profile_view' id=alert.owner.id %}" style="text-decoration: none;">{{ alert.owner.get_full_name }}</a>
+                                    </h5>
+                                    {% else %}<h5 class="email-name">
+                                    Posted by Internet</h5>
+                                {% endif %}
+                                    {% if alert.owner.email != 'internet@user.com' %}
+                                    <div class="float-right">
+                                        {% if request.user.moderator != 'public' and alert.alert_state == 'pending' and alert.rating == 0 %}
+                                        <div class="star-rating" alert_id="{{ alert.id }}">
+                                            <input type="radio" name="example" class="rating" value="1"/>
+                                            <input type="radio" name="example" class="rating" value="2"/>
+                                            <input type="radio" name="example" class="rating" value="3"/>
+                                            <input type="radio" name="example" class="rating" value="4"/>
+                                            <input type="radio" name="example" class="rating" value="5"/>
+                                        </div>
+                                        {% else %}
+                                            <div class="">
+                                            {% if alert.rating == 0 %}
+                                                <a name="example" class="star"
+                                                   title="1"></a>
+                                                <a name="example" class="star"
+                                                   title="2"></a>
+                                                <a name="example" class="star"
+                                                   title="3"></a>
+                                                <a name="example" class="star"
+                                                   title="4"></a>
+                                                <a name="example" class="star"
+                                                   title="5"></a>
+                                                {% else %}
+                                                {% for c in "12345" %}
+                                                    {% if alert.rating|to_int >= forloop.counter %}
+                                                        <a name="example" class="star fullStar"
+                                                           title="{{ forloop.counter }}"></a>
+                                                    {% else %}
+                                                        <a name="example" class="star"
+                                                           title="{{ forloop.counter }}"></a>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                    <p class="desc">
+                                        {{ alert.description }}
+                                    </p>
+                                    <div class="float-right notify-date-text">{{ alert.updated_at|timesince }} ago</div>
+                                    {% if alert.owner.email != 'internet@user.com' %}<p>
+                                        {% if request.user.moderator != 'public' and alert.rating != 0 %}
+                                            <a href="{% url 'Alerts:alert_accept_view' %}?alert_id={{ alert.id }}&alert_type={{ type }}" class="pure-button button-success button-small">Accept</a>
+                                            <a href="{% url 'Alerts:alert_reject_view' %}?alert_id={{ alert.id }}&alert_type={{ type }}"
+                                               class="pure-button button-error button-small">Reject</a>
+                                        {% endif %}
+                                    </p>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    <br><br>
+                    <ul class="pagination centered">
+                        {% if list_alerts.paginator.has_previous %}
+                            <li>
+                                <span><a
+                                        href="?page={{ list_alerts.paginator.previous_page_number }}">Previous</a></span>
+                            </li>
+                        {% endif %}
+                        <li class="">
+                            <span>Page {{ list_alerts.number }} of {{ list_alerts.paginator.num_pages }}.</span>
+                        </li>
+                        {% if list_alerts.paginator.has_next %}
+                            <li>
+                                <span><a
+                                        href="?page={{ list_alerts.paginator.next_page_number }}">Next</a></span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p class="padding20">You don't have any alert yet.</p>
+                {% endif %}
+            </column>
+        </row>
         </div>
     </div>
     </div>
@@ -26,5 +149,57 @@
 {% endblock %}
 
 {% block js_block %}
+
+<script type="text/javascript" src="{% static 'js/rating.js' %}">
+
+</script>
+    <script type="text/javascript">
+        $(function () {
+
+            {% if request.user.moderator != 'public' %}
+
+            // Start when document ready
+            $('.star-rating').rating(my_callback); // Call the rating plugin
+
+            function my_callback(data,e){
+                setTimeout(function () {
+                    $.ajax({
+
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                        },
+                        url: "{% url 'Alerts:alert_rate_view' %}",
+                        method: "POST",
+                        dataType: "json",
+                        data: {
+                            alert_type: '{{ type }}',
+                            alert_rate: data,
+                            alert_id: star
+                        },
+                        success: function (data) {
+                            console.log(data['result']);
+                                    window.location.reload();
+                        },
+                        error: function (xhr, errmsg, err) {
+                            console.log(xhr.status + ": " + xhr.responseText);
+                            window.location.reload();
+                        },
+                        fail: function (data) {
+                            console.log(data['result']);
+                        }
+                    });
+
+                },1000);
+            }
+                var star = null;
+                $('.star-rating').click(function () {
+                    star = $(this).attr('alert_id');
+                    console.log(star);
+                });
+
+            });
+            {% endif %}
+
+    </script>
 
 {% endblock %}
