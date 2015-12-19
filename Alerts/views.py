@@ -1,6 +1,6 @@
 import json
 import urllib2
-from AlertManagement.settings import API_KEY
+from AlertManagement.settings import API_KEY, AUTH_TOKEN, APP_ID
 from BeautifulSoup import BeautifulSoup
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render_to_response, get_object_or_404
@@ -14,7 +14,9 @@ from django.http.response import HttpResponseRedirect, JsonResponse, Http404, Ht
 from Registrations.models import User
 from django import http
 from django.db.models.query_utils import Q
+import html5lib
 from notifications import notify
+from twilio.rest import TwilioRestClient
 
 __author__ = 'Hp'
 
@@ -388,6 +390,37 @@ class AlertDeleteView(TemplateView):
             return http.HttpResponseServerError('<h1>Server Error (500)</h1>')
 
 
+class GetAlertView(TemplateView):
+    template_name = 'view_alert.html'
+    model = TrafficAlert
+    paginate_by = 30
+
+    def get_context_data(self, **kwargs):
+        """Use this to add extra context."""
+        context = super(GetAlertView, self).get_context_data(**kwargs)
+        context = update_response_logged_in(self.request, context)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context.update(csrf(self.request))
+        alert_id = self.request.GET.get('alert_id')
+        alert_type = self.request.GET.get('alert_type')
+        alert_type = alert_type.lower()
+        if alert_type == 'traffic':
+            alert = get_object_or_404(TrafficAlert, pk=int(alert_id))
+            context.update({'type': 'traffic'})
+        elif alert_type == 'weather':
+            alert = get_object_or_404(WeatherAlert, pk=int(alert_id))
+            context.update({'type': 'weather'})
+        elif alert_type == 'crime':
+            alert = get_object_or_404(CrimeAlert, pk=int(alert_id))
+            context.update({'type': 'crime'})
+        context.update({'alert': alert})
+        return render_to_response(self.template_name,
+                                  context=context)
+
+
 def test_url_weather(request):
     # City = request.user.city
     City = 'Sialkot'
@@ -418,24 +451,101 @@ def test_url(request):
     # City = request.user.city
     City = 'Sialkot'
     Country = 'Pakistan'
-    keywords = 'bomb+blast+pakistan'
+    keywords_crime = ['bomb blast', 'violence', 'kill']
+    keywords_traffic = ['traffic jam', 'road block']
+    keywords_weather = ['thunder', 'storm', 'rain', 'sunny']
     url_google = 'http://arynews.tv/en/category/pakistan/'
-    response = urllib2.urlopen(url_google)
+    response = urllib2.Request(url_google, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'})
+    response = urllib2.urlopen(response)
     html = response.read()
     bs = BeautifulSoup(html)
-
-    news = bs.select('.span-24 .top-news .group-0')
 
     internet_user = User.objects.get(email='internet@user.com')
     map_location = MapLocation.objects.create(longitude=float(0),
                                               latitude=float(0),
                                               is_exact_location=False,
                                               city=Country)
-    crime = CrimeAlert.objects.create(alert_state='pending',
-                                        alert_privacy='public',
-                                        owner=internet_user,
-                                        map_location=map_location,
-                                        alert_intensity='Bomb Blast'
-                                        )
-    return HttpResponse(crime)
 
+    news = bs.findAll("h2", attrs={'class': 'posttitle'})
+
+    for new in news:
+        text = new.find('a').text.lower()
+        for keyword in keywords_crime:
+            if keyword in text:
+                crime = CrimeAlert.objects.create(alert_state='accept',
+                                                  alert_privacy='public',
+                                                  owner=internet_user,
+                                                  map_location=map_location,
+                                                  alert_intensity=keyword.capitalize()
+                                                  )
+        for keyword in keywords_weather:
+            if keyword in text:
+                weather = WeatherAlert.objects.create(alert_state='accept',
+                                                      alert_privacy='public',
+                                                      owner=internet_user,
+                                                      map_location=map_location,
+                                                      alert_intensity=keyword.capitalize()
+                                                      )
+        for keyword in keywords_traffic:
+            if keyword in text:
+                traffic = TrafficAlert.objects.create(title='<a>' + text.new.find('a').text + '</a>',
+                                                      alert_state='accept',
+                                                      alert_privacy='public',
+                                                      owner=internet_user,
+                                                      map_location=map_location,
+                                                      alert_intensity=keyword.capitalize()
+                                                      )
+
+    url_google = 'http://www.dawn.com/pakistan/'
+    response = urllib2.Request(url_google, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'})
+    response = urllib2.urlopen(response)
+    html = response.read()
+    print html
+    bs = BeautifulSoup(html)
+
+    news = bs.findAll("a", attrs={'class': 'story__link'})
+    for new in news:
+        text = new.text.lower()
+        for keyword in keywords_crime:
+            if keyword in text:
+                crime = CrimeAlert.objects.create(title=new.text,
+                                                  description='',
+                                                  alert_state='accept',
+                                                  alert_privacy='public',
+                                                  owner=internet_user,
+                                                  map_location=map_location,
+                                                  alert_intensity=keyword.capitalize()
+                                                  )
+        for keyword in keywords_weather:
+            if keyword in text:
+                weather = WeatherAlert.objects.create(title=new.text,
+                                                      alert_state='accept',
+                                                      alert_privacy='public',
+                                                      owner=internet_user,
+                                                      map_location=map_location,
+                                                      alert_intensity=keyword.capitalize()
+                                                      )
+        for keyword in keywords_traffic:
+            if keyword in text:
+                traffic = TrafficAlert.objects.create(title=new.text,
+                                                      alert_state='accept',
+                                                      alert_privacy='public',
+                                                      owner=internet_user,
+                                                      map_location=map_location,
+                                                      alert_intensity=keyword.capitalize()
+                                                      )
+
+
+    return HttpResponse({'message': 'done'})
+
+
+def test_url_(request):
+    client = TwilioRestClient(APP_ID, AUTH_TOKEN)
+
+    client.messages.create(
+        to="+923337447911",
+        from_="+14158141829",
+        body="Hey Saad! Good luck on the bar exam!",
+        media_url="http://farm2.static.flickr.com/1075/1404618563_3ed9a44a3a.jpg",
+    )
+    return

@@ -23,7 +23,6 @@
                     </div>
                 </column>
             {% endif %}
-
             </row>
         <row>
             <column cols="12">
@@ -55,7 +54,7 @@
                                             <span class="rejected-state">(Rejected!)</span>
                                         {% endif %}
                                         {% endif %}
-                                        <a class="float-right pure-button button-secondary button-small">View Map</a>
+                                        <a href="{% url 'Alerts:alert_get_view' %}?alert_type={{ type }}&alert_id={{ alert.id }}" class="float-right pure-button button-secondary button-small">View Map</a>
                                     </h4>
                                 {% if alert.owner.email != 'internet@user.com' %}
                                     <h5 class="email-name">

@@ -158,3 +158,5 @@ def api_create_alert(request):
                     action_object=alert,
                     data=dict(actions={})
                     )
+
+    return JsonResponse({'alert': alert.id})

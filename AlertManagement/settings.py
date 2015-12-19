@@ -25,6 +25,8 @@ SITE_URL = 'http://127.0.0.1:8000'
 SECRET_KEY = 'oynt$8wd&@1l3l4mpfu%jap@=(fz63g$ee%q1*d@hkj6t+$nnm'
 # Open weather API key
 API_KEY = '278a5df2c96ad2da3f6b3543a36dab33'
+APP_ID = '3577115'
+AUTH_TOKEN = 'WtifP27wr0PFv0rJTBCUyHrlOB8xjE.KPlIhdsju7vK5hWid8BKCMxJBOx629QqrdqhXbUQ_'
 # AUTHENTICATION_BACKENDS = ['Registration.backends.EmailAuthBackend', ]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True

@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^reject$', login_required(AlertRejectView.as_view(), login_url='/login/'), name='alert_reject_view'),
     url(r'^rate$', login_required(AlertRateView.as_view(), login_url='/login/'), name='alert_rate_view'),
     url(r'^delete$', login_required(AlertDeleteView.as_view(), login_url='/login/'), name='alert_delete_view'),
+    url(r'^view', login_required(GetAlertView.as_view(), login_url='/login/'), name='alert_get_view'),
     url(r'^test', test_url, name='alert_test_view')
 ]

@@ -49,6 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     city = models.CharField(default='', max_length=60)
+    phone_number = models.CharField(default='', max_length=60)
     profile_img_path = models.CharField(max_length=512, default='/static/img/default_profile_image.jpg', blank=True)
     objects = MyUserManager()
     USERNAME_FIELD = 'email'

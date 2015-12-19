@@ -247,6 +247,7 @@
       <column name="profile_img_path" sqlType="VARCHAR(512)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="bearer_token" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="city" sqlType="VARCHAR(60)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="phone_number" sqlType="VARCHAR(60)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="id"/>
       <exported-key name="#FAKE_Alerts_crimealert_1" table="Alerts_crimealert" schema="" catalog="" columns="owner_id"/>
       <exported-key name="#FAKE_Alerts_trafficalert_1" table="Alerts_trafficalert" schema="" catalog="" columns="owner_id"/>
