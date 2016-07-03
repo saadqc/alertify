@@ -1,0 +1,83 @@
+{% extends 'content.html' %}
+
+{% load static %}
+{% block content %}
+<div class="center padding40" style="margin-top: 4%">
+    <div class="content-area bg-blue">
+        <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <h2>Notifications</h2>
+            {% if is_paginated %}
+
+                {% for notice in list_notifications %}
+                    <div id="list" class="pure-u-1">
+                        <div class="email-item email-item-selected pure-g">
+                            <div class="pure-u">
+                                <img class="email-avatar" height="64" width="64"
+                                     src="{{ notice.actor.profile_img_path }}">
+                            </div>
+
+                            <div class="pure-u" style="width:88%;margin-left: 5px; cursor: default;">
+                                <h5 class="email-name">{{ notice.actor.get_full_name }}
+                                    {% if notice.unread %}
+                                    <a onclick='mark_as_read("{% url 'notifications:mark_as_read' notice.slug %}")' class="float-right pure-button button-secondary button-small">Mark as Read</a>
+                                        {% endif %}
+                                    </h5>
+                                <h4 class="email-subject">{{ notice.actor.first_name }} {{ notice.verb }}</h4>
+
+                                <p class="desc">
+                                    {{ notice.description }}
+
+                                </p>
+
+                                <div class="float-right notify-date-text">{{ notice.timesince }} ago</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% csrf_token %}
+                <br><br>
+                <ul class="pagination centered">
+                    {% if list_notifications.paginator.has_previous %}
+                        <li>
+                            <span><a href="?page={{ list_notifications.paginator.previous_page_number }}">Previous</a></span>
+                        </li>
+                    {% endif %}
+                    <li class="">
+                        <span>Page {{ list_notifications.number }} of {{ list_notifications.paginator.num_pages }}.</span>
+                    </li>
+                    {% if list_notifications.paginator.has_next %}
+                        <li>
+                            <span><a href="?page={{ list_notifications.paginator.next_page_number }}">Next</a></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <p class="padding20">You don't have any notification yet.</p>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js_block %}
+    <script type="text/javascript">
+    function mark_as_read(url){
+            $.ajax({
+                beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                url: url,
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    window.location.reload();
+                },
+                    error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                        window.location.reload();
+                },
+            });
+    }
+    </script>
+{% endblock %}

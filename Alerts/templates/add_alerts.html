@@ -1,0 +1,259 @@
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="content-area bg-blue">
+            <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <h2>Create Alert</h2>
+
+                <div class="pure-form-aligned">
+
+                    <form class="pure-form">
+                        <div class="pure-control-group">
+                            <label for="title">Title</label>
+                            <input id="title" pattern=".{3,}" placeholder="Alert Title" required class="pure-input-1-2" type="text" name="title"/>
+                            </div>
+                    {% csrf_token %}
+                        <div class="pure-control-group">
+                            <label for="">Description</label>
+                            <textarea id="description" required style="min-height: 10.5em" maxlength="140" placeholder="Write alert description here..."
+                                      class="pure-input-1-2" name="description"></textarea>
+                                </div>
+                        <div class="pure-control-group">
+                            <label for="privacy">Share with</label>
+                            <select id="privacy" class="pure-input-1-2" name="privacy">
+                                <option value="public" selected>Public</option>
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="alert_type">Alert Type</label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="alert_type" value="traffic" checked>
+                                Traffic Alert
+                            </label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="alert_type" value="crime">
+                                Crime Alert
+                            </label>
+                            <label for="option-two" class="pure-radio">
+                                <input type="radio" name="alert_type" value="weather">
+                                Weather Alert
+                            </label>
+                        </div>
+
+                        <div class="pure-control-group" name="weather_control">
+                            <label for="" class="">Intensity</label>
+                            <select id="weather_select" class="pure-input-1-2">
+                                <option selected>Sunny</option>
+                                <option>Cold</option>
+                                <option>Hot</option>
+                                <option>Haze</option>
+                                <option>Snow</option>
+                                <option>Cloudy</option>
+                                <option>Storm</option>
+                                <option>Raining</option>
+                            </select>
+                        </div>
+
+                        <div class="pure-control-group" name="traffic_control">
+                            <label for="" class="">Intensity</label>
+                            <select id="traffic_select" class="pure-input-1-2">
+                                <option selected>Road Blocked</option>
+                                <option>Traffic jam</option>
+                            </select>
+                        </div>
+
+                        <div class="pure-control-group" name="terrorism_control">
+                            <label for="" class="">Intensity</label>
+                            <select id="terrorism_select" class="pure-input-1-2">
+                                <option selected>Bomb blast</option>
+                                <option>Violence</option>
+                                <option>Local crime</option>
+                            </select>
+                        </div>
+
+                        <div class="pure-control-group" name="weather_div">
+                            <label for="" class="">Location</label>
+                            <input id="search_origin" type="text" required value=""
+                                   placeholder="Search for your area..." class="pure-input-1-2"/>
+                            <input type="hidden" id="search" name="search" value=""/>
+
+                        </div>
+
+                        <div class="pure-control-group" name="traffic_div">
+                            <label for="" class="">Source</label>
+                            <input id="source" type="text" required value=""
+                                   placeholder="Search Source" class="pure-input-1-2"/>
+                            <input type="hidden" id="src_val" name="src" value=""/>
+
+                        </div>
+
+                        <div class="pure-control-group" name="traffic_div">
+                            <label for="" class="">Destination</label>
+                            <input id="destination" type="text" required value=""
+                                   placeholder="Search Destination" class="pure-input-1-2"/>
+                            <input type="hidden" id="dest_val" name="dest" value=""/>
+
+                        </div>
+
+                    <input type="submit" id="send" style="display: none;" value="Send" />
+                    </form>
+
+                        <div style="height: 450px;border: #DDDDDD 2px solid;margin-bottom: 5px;">
+                            <label for=""></label>
+                                        <div id="map-canvas">
+
+                                        </div>
+                        </div>
+                    <hr>
+                    <div class="pure-control-group">
+                        <label for=""></label>
+                        <button id="create_alert" class="pure-button button-success">
+                            Create Alert
+                        </button>
+
+                        <a href="{% url 'Alerts:alert_view' %}" style="padding-left: 30px;padding-right:30px" class="padding10 pure-button button-error">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_block %}
+    <script src="{% static 'js/google-map.js' %}" type="text/javascript">
+
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+
+        $("input[name='alert_type']").change(function () {
+            var type = $(this).val();
+            changealert(type);
+        });
+
+        $('div[name="terrorism_div"]').hide();
+        $('div[name="traffic_div"]').show();
+        $('div[name="weather_div"]').hide();
+        $('div[name="weather_control"]').hide();
+        $('div[name="traffic_control"]').show();
+        $('div[name="terrorism_control"]').hide();
+
+        function changealert(type){
+
+            if (type == "traffic") {
+                $('div[name="terrorism_div"]').hide();
+                $('div[name="traffic_div"]').show();
+                $('div[name="weather_div"]').hide();
+                $('div[name="weather_control"]').hide();
+                $('div[name="traffic_control"]').show();
+                $('div[name="terrorism_control"]').hide();
+                marker.setMap(null);
+            }
+            else if (type == "weather") {
+                $('div[name="terrorism_div"]').hide();
+                $('div[name="traffic_div"]').hide();
+                $('div[name="weather_div"]').show();
+                $('div[name="weather_control"]').show();
+                $('div[name="traffic_control"]').hide();
+                $('div[name="terrorism_control"]').hide();
+                marker_dest.setMap(null);
+                marker_src.setMap(null);
+                directionsDisplay.setMap(null);
+            }
+            else if (type == "crime") {
+                $('div[name="terrorism_div"]').show();
+                $('div[name="traffic_div"]').hide();
+                $('div[name="weather_div"]').show();
+                $('div[name="weather_control"]').hide();
+                $('div[name="traffic_control"]').hide();
+                $('div[name="terrorism_control"]').show();
+                marker_dest.setMap(null);
+                marker_src.setMap(null);
+                directionsDisplay.setMap(null);
+            }
+        }
+
+
+        $('#create_alert').click(function () {
+            var tdata = null;
+            var isvalid = true;
+            var title = $('#title').val();
+            var desc = $('#description').val();
+            var privacy = $('#privacy option:selected').val();
+            var type = $("input[name='alert_type']:checked").val();
+            var owner_id = '{{ user.id }}';
+
+            if(type=='traffic'){
+                var intensity = $('#traffic_select option:selected').first().text();
+                var src_val = $('#src_val').val();
+                var dest_val = $('#dest_val').val();
+                tdata = {
+                    intensity: intensity,
+                    src: src_val,
+                    dest: dest_val
+                };
+            }
+            else if(type == 'terrorism'){
+                var intensity = $('#terrorism_select option:selected').text();
+                var search = $('#search').val();
+                tdata = {
+                  intensity: intensity,
+                    search: search
+                };
+            }
+            else if(type == 'weather'){
+                var intensity = $('#weather_select option:selected').text();
+                var search = $('#search').val();
+                tdata = {
+                    intensity: intensity,
+                    search: search
+                };
+            }
+
+            $.ajax({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                url: "{% url 'Alerts:alert_create_view' %}",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    alert_type: type,
+                    privacy: privacy,
+                    title: title,
+                    desc: desc,
+                    owner_id: owner_id,
+                    args: tdata
+                },
+                success: function (data) {
+                    console.log(data['result']);
+                    if(data['result']=='SUCCESS'){
+                        console.log(data['result']);
+                        if(data['type'] == 'weather')
+                            window.location.href = '{% url 'Alerts:alert_weather_view' %}?state=mine';
+
+                        else if (data['type'] == 'crime')
+                            window.location.href = '{% url 'Alerts:alert_crime_view' %}?state=mine';
+
+                        else if (data['type'] == 'traffic')
+                            window.location.href = '{% url 'Alerts:alert_traffic_view' %}?state=mine';
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                },
+                fail: function (data) {
+                    console.log(data['result']);
+                }
+            });
+        });
+    });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="bg-blue">
+        <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <div class="pure-g center bg-white">
+                <div class="pure-u-1-3 padding10">
+                    <p>
+                        <img class="profile-img" src="{{ profile_user.profile_img_path }}">
+                    </p>
+                    {% if profile_user.id == user.id %}
+                    <p class="center">
+                        <button id="btn_upload" class="pure-button button-secondary">Update Image</button>
+                    </p>
+                    <form method="post" id="image_form" enctype="multipart/form-data"
+                          action="{% url 'Profiles:profile_image_view' %}" class="hidden">
+                        <input name="image" id="btn_file" type="file">
+                        {% csrf_token %}
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="pure-u-1-3 padding10">
+                    <p>
+                        <h1>{{ profile_user.get_full_name }}</h1>
+                    </p>
+                    <p class="font-set">
+                    Gender:
+                    {{ profile_user.gender }}
+                    </p>
+
+                    <p class="font-set">
+                        City:
+                        {{ profile_user.city }}
+                    </p>
+                    {% if profile_user.moderator == 'public' %}
+                    <p>
+
+                        {% for c in "12345" %}
+                            {% if int_rating >= forloop.counter %}
+                                <a name="example" class="star fullStar"
+                                   title="{{ forloop.counter }}"></a>
+                            {% else %}
+                                <a name="example" class="star"
+                                   title="{{ forloop.counter }}"></a>
+                            {% endif %}
+                        {% endfor %}
+                    </p><br>
+                <p>
+                    Alerts Rating: {{ rating }}
+                </p><br>
+                        {% else %}
+                        <p>Moderator: {{ request.user.moderator|capfirst }}</p><br>
+                {% endif %}
+                    {% if profile_user.id == user.id %}
+                    <p class="font-set">
+                        <a href="{% url 'Profiles:profile_update_view' %}" class="pure-button button-small">Change Password</a>
+                    </p>
+                        {% else %}
+                    {% endif %}
+                </div>
+            </div>
+            </div>
+            {% if profile_user.id == user.id and user.moderator == 'public' %}
+            <div class="bg-wheat padding10">
+                <div class="pure-g" style="margin-left: 20px;margin-right: 20px;">
+                <a href="{% url 'Alerts:alert_crime_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                    My Crime Alerts
+                </a>
+                        <a href="{% url 'Alerts:alert_weather_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                            My Weather Alerts
+                        </a>
+                        <a href="{% url 'Alerts:alert_traffic_view' %}?state=mine" class="pure-u-1-6 padding10 profile-sub-menu">
+                            My Traffic Alerts
+                        </a>
+                    <a href="{% url 'Groups:group_view' %}" class="pure-u-1-6 padding10 profile-sub-menu">
+                        My Groups
+                    </a>
+                    <a href="#" class="pure-u-1-6 padding10 profile-sub-menu">
+                        My Activity
+                    </a>
+                    <a href="#" class="pure-u-1-6 padding10 profile-sub-menu">
+
+                    </a>
+                    </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js_block %}
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $("#btn_upload").click(function () {
+                $('#btn_file').click();
+            });
+            $("#btn_file").change(function () {
+                $('#image_form').submit();
+            });
+        });
+    </script>
+
+{% endblock %}

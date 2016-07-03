@@ -1,0 +1,46 @@
+<html>
+	<head>
+        {% include 'styles.html' %}
+		<title>Job Jiant</title>
+	</head>
+
+	<body>
+		<div class="body-wrapper">
+			<div class="content-wrapper">
+				<div class="header">
+					<div class="logo-info open-sans-light">
+						<div class="logo"></div>
+						Job <span class="orange">Jiant</span>
+					</div>
+				</div>
+
+				<div class="content-holder">
+					<div class="content-box">
+						<div class="sign-info"><span class="open-sans-extrabold">500+</span> <span class="open-sans-light">EMPLOYEES ARE WAITING FOR YOU</span></div>
+						<div class="function-box">
+							<div class="heading open-sans-light">Verify Email Address</div>
+							<div class="form"> 
+                                <label>A verification email has been sent to {{ email }}. Please click on the link given in your email
+                                    to verify your email address. </label>
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+			<div class="footer open-sans-extrabold">
+				<div class="logo-tag">JobJiant</div>
+				<ul class="open-sans-semibold">
+					<li><a>How it works</a></li>
+					<li><a>Supported Domains</a></li>
+					<li><a>List of Sub Domains</a></li>
+					<li><a>Cookie Policy</a></li>
+					<li><a>How it works</a></li>
+					<li><a>Supported Domains</a></li>
+					<li><a>List of Sub Domains</a></li>
+					<li><a>Cookie Policy</a></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+{% include 'scripts.html' %}
+</html>

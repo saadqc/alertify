@@ -1,0 +1,59 @@
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="bg-blue">
+            <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+            <row>
+                <column cols="10">
+                    <h2>My Groups</h2>
+                </column>
+                <column cols="2">
+                    <div class="float-right">
+                        <button onclick="window.location='{% url 'Groups:group_create_view' %}'" class="pure-button button-secondary button-large">Create Group</button>
+                    </div>
+                </column>
+
+            </row>
+                {% if is_paginated %}
+                <div id="semantic-grid" class="padding20">
+                    <row>
+                    {% for group in list_groups %}
+                        <column cols="4">
+                                <a href="{% url 'Groups:group_get_view' id=group.id %}" class="font-set-heading">
+                                    {{ group.name }}
+                                </a><br>
+                                <label class="sub_heading">Members: {{ group.users.count }}</label>
+                        </column>
+                        {% if forloop.counter|divisibleby:3 %}
+                            </row>
+                            <row>
+                        {% endif %}
+                    {% endfor %}
+                    </row>
+                </div>
+
+                    <ul class="pagination centered">
+                        {% if list_groups.paginator.has_previous %}
+                            <li>
+                                <span><a href="?page={{ list_groups.paginator.previous_page_number }}">Previous</a></span>
+                            </li>
+                        {% endif %}
+                        <li class="">
+                            <span>Page {{ list_groups.number }} of {{ list_groups.paginator.num_pages }}.</span>
+                        </li>
+                        {% if list_groups.paginator.has_next %}
+                            <li>
+                                <span><a href="?page={{ list_groups.paginator.next_page_number }}">Next</a></span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p class="padding20">You haven't created any group yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+<div class="alert">
+  <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+    <i class="icon-close"></i>
+  </a>
+  
+  <a href="{% url 'Profiles:notify_view' %}" class="notify-bar">
+    <table>
+    <tr>
+        <td>
+            <img class="profile-img-small-notify"
+                 src="{{ notice.actor.profile_img_path }}">
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                       <div class="notify-text notify-td">{{ notice.actor.get_full_name }} {{ notice.verb }}{% if notice.target %} of {{ notice.target }}{% endif %}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="notify-text">{{ notice.description|linebreaksbr }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="float-right notify-date-text">{{ notice.timesince }} ago</div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+  <hr style="border-style:solid;height: 1px;color: #aaaaaa;;">
+  </a>
+  
+  <div class="notice-actions">
+    {% for action in notice.data.actions %}
+      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+    {% endfor %}
+  </div>
+</div>

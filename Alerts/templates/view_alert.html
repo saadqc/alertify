@@ -1,0 +1,54 @@
+
+{% extends 'content.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="center padding40" style="margin-top: 4%">
+        <div class="content-area bg-blue">
+            <div class="bg-white padding50" style="margin-left: 20px;margin-right: 20px">
+                <h3>{{ alert.title }}</h3>
+                <hr>
+                <div class="pure-form-aligned">
+
+                    <p>{{ alert.description }}</p>
+                    <p>Intensity {{ alert.alert_intensity }}</p>
+                    <p>Updated {{ alert.updated_at|timesince }} ago</p>
+                    </div>
+                </div>
+            <div style="height: 450px;border: #DDDDDD 2px solid;margin-bottom: 5px;">
+                <label for=""></label>
+
+                <div id="map-canvas">
+
+                </div>
+            </div>
+            </div>
+
+    </div>
+
+{% endblock %}
+
+{% block js_block %}
+    <script src="{% static 'js/google-map-view.js' %}" type="text/javascript">
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            setTimeout(function () {
+                if ('{{ type }}' == 'crime') {
+                    fillPlaceSearch('{{ alert.map_location.longitude }}', '{{ alert.map_location.latitude }}')
+                }
+                else if ('{{ type }}' == 'weather') {
+                    fillPlaceSearch('{{ alert.map_location.longitude }}', '{{ alert.map_location.latitude }}')
+                }
+                else if ('{{ type }}' == 'traffic') {
+                    calcRoute('{{ alert.map_location_from.longitude }}', '{{ alert.map_location_from.latitude }}',
+                            '{{ alert.map_location_to.longitude }}', '{{ alert.map_location_to.latitude }}')
+                }
+            }, 2000);
+
+        });
+    </script>
+
+{% endblock %}
